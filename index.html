@@ -26,16 +26,19 @@
         </div>
         <div id="appSection" style="display:none;">
             <h2>Welcome, <span id="userDisplay"></span>!</h2>
-            <p>Points: <span id="points">0</span></p>
+            <p>Session Points: <span id="points">0</span></p>
+            <p>Total Points: <span id="totalPoints">0</span></p>
             <button id="startBtn">Start Session</button>
             <button id="endBtn" style="display:none;">End Session</button>
             <button id="logoutBtn">Logout</button>
         </div>
     </div>
-    <script src="app.js"></script>
+
     <div id="installPrompt" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #f0f2f5; padding: 10px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
-    <p>Install Focus Points app for a better experience!</p>
-    <button id="installBtn">Install</button>
-</div>
+        <p>Install Focus Points app for a better experience!</p>
+        <button id="installBtn">Install</button>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
