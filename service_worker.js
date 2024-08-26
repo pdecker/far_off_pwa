@@ -1,9 +1,9 @@
 const CACHE_NAME = 'focus-points-v1';
 const urlsToCache = [
-'/',
-'/index.html',
-'/styles.css',
-'/app.js'
+'./',
+'./index.html',
+'./styles.css',
+'./app.js'
 ];
 self.addEventListener('install', event => {
 event.waitUntil(
