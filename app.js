@@ -7,6 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const startBtn = document.getElementById('startBtn');
     const endBtn = document.getElementById('endBtn');
 
+    let session = {
+        active: false,
+        points: 0,
+        timer: null
+    };
+
     document.getElementById('showSignup').addEventListener('click', (e) => {
         e.preventDefault();
         loginSection.style.display = 'none';
@@ -47,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         signupSection.style.display = 'none';
         appSection.style.display = 'block';
         userDisplay.textContent = username;
+        updatePointsDisplay();
     }
 
     function logout() {
@@ -54,17 +61,36 @@ document.addEventListener('DOMContentLoaded', () => {
         loginSection.style.display = 'block';
         document.getElementById('username').value = '';
         document.getElementById('password').value = '';
+        endSession();
     }
 
     function startSession() {
-        startBtn.style.display = 'none';
-        endBtn.style.display = 'inline';
-        // Start timer logic here
+        if (!session.active) {
+            session.active = true;
+            startBtn.style.display = 'none';
+            endBtn.style.display = 'inline';
+            session.timer = setInterval(() => {
+                session.points++;
+                updatePointsDisplay();
+            }, 60000); // Increase points every minute
+            console.log('Session started');
+        }
     }
 
     function endSession() {
-        startBtn.style.display = 'inline';
-        endBtn.style.display = 'none';
-        // End timer and calculate points logic here
+        if (session.active) {
+            session.active = false;
+            startBtn.style.display = 'inline';
+            endBtn.style.display = 'none';
+            clearInterval(session.timer);
+            console.log(`Session ended. Points earned: ${session.points}`);
+            // Here you would typically send the session data to your server
+            session.points = 0;
+            updatePointsDisplay();
+        }
+    }
+
+    function updatePointsDisplay() {
+        pointsDisplay.textContent = session.points;
     }
 });
