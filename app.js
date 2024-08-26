@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const appSection = document.getElementById('appSection');
     const userDisplay = document.getElementById('userDisplay');
     const pointsDisplay = document.getElementById('points');
+    const totalPointsDisplay = document.getElementById('totalPoints');
     const startBtn = document.getElementById('startBtn');
     const endBtn = document.getElementById('endBtn');
 
@@ -11,65 +12,23 @@ document.addEventListener('DOMContentLoaded', () => {
         active: false,
         points: 0,
         timer: null
-    let deferredPrompt;
-const installPrompt = document.getElementById('installPrompt');
-const installBtn = document.getElementById('installBtn');
-
-window.addEventListener('beforeinstallprompt', (e) => {
-    // Prevent Chrome 67 and earlier from automatically showing the prompt
-    e.preventDefault();
-    // Stash the event so it can be triggered later
-    deferredPrompt = e;
-    // Update UI to notify the user they can add to home screen
-    installPrompt.style.display = 'block';
-});
-
-installBtn.addEventListener('click', (e) => {
-    // Hide our user interface that shows our A2HS button
-    installPrompt.style.display = 'none';
-    // Show the prompt
-    deferredPrompt.prompt();
-    // Wait for the user to respond to the prompt
-    deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
-            console.log('User accepted the A2HS prompt');
-        } else {
-            console.log('User dismissed the A2HS prompt');
-        }
-        deferredPrompt = null;
-    });
-});
-
-// Check if the app is already installed
-window.addEventListener('appinstalled', (evt) => {
-    installPrompt.style.display = 'none';
-    console.log('App was installed');
-});
     };
 
-    document.getElementById('showSignup').addEventListener('click', (e) => {
-        e.preventDefault();
-        loginSection.style.display = 'none';
-        signupSection.style.display = 'block';
-    });
+    let user = {
+        username: '',
+        totalPoints: 0
+    };
 
-    document.getElementById('showLogin').addEventListener('click', (e) => {
-        e.preventDefault();
-        signupSection.style.display = 'none';
-        loginSection.style.display = 'block';
-    });
-
-    document.getElementById('loginBtn').addEventListener('click', login);
-    document.getElementById('signupBtn').addEventListener('click', signup);
-    document.getElementById('logoutBtn').addEventListener('click', logout);
-    startBtn.addEventListener('click', startSession);
-    endBtn.addEventListener('click', endSession);
+    // ... (keep the existing event listeners)
 
     function login() {
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
         console.log('Login attempt:', username, password);
-        // Here you would typically send this data to your server
+        // Here you would typically send this data to your server and get the user's total points
+        // For now, we'll simulate this with local storage
+        user.username = username;
+        user.totalPoints = parseInt(localStorage.getItem(username + '_points') || 0);
         showApp(username);
     }
 
@@ -79,6 +38,9 @@ window.addEventListener('appinstalled', (evt) => {
         const password = document.getElementById('newPassword').value;
         console.log('Signup attempt:', username, email, password);
         // Here you would typically send this data to your server
+        user.username = username;
+        user.totalPoints = 0;
+        localStorage.setItem(username + '_points', '0');
         showApp(username);
     }
 
@@ -96,6 +58,7 @@ window.addEventListener('appinstalled', (evt) => {
         document.getElementById('username').value = '';
         document.getElementById('password').value = '';
         endSession();
+        user = { username: '', totalPoints: 0 };
     }
 
     function startSession() {
@@ -118,7 +81,11 @@ window.addEventListener('appinstalled', (evt) => {
             endBtn.style.display = 'none';
             clearInterval(session.timer);
             console.log(`Session ended. Points earned: ${session.points}`);
+            // Update total points
+            user.totalPoints += session.points;
             // Here you would typically send the session data to your server
+            // For now, we'll use local storage
+            localStorage.setItem(user.username + '_points', user.totalPoints.toString());
             session.points = 0;
             updatePointsDisplay();
         }
@@ -126,5 +93,8 @@ window.addEventListener('appinstalled', (evt) => {
 
     function updatePointsDisplay() {
         pointsDisplay.textContent = session.points;
+        totalPointsDisplay.textContent = user.totalPoints;
     }
+
+    // ... (keep the PWA installation code)
 });
